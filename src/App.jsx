@@ -12,7 +12,9 @@ import {
   FiSettings,
   FiX,
   FiAlertTriangle,
-  FiGlobe
+  FiGlobe,
+  FiSun,
+  FiMoon
 } from "react-icons/fi";
 import SendPayment from "./components/SendPayment";
 import FraudScanner from "./components/FraudScanner";
@@ -22,6 +24,7 @@ import TrustDashboard from "./components/TrustDashboard";
 import { seedTransactions } from "./data/seedTransactions";
 import VoiceChatbot from "./components/VoiceChatbot";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
+import { useTheme } from "./context/ThemeContext";
 
 function AppContent() {
   const { lang, toggleLang, t } = useLanguage();
@@ -82,12 +85,27 @@ function AppContent() {
     </button>
   );
 
+  // Theme toggle button component
+  const ThemeToggle = ({ compact = false }) => {
+    const { theme, toggleTheme } = useTheme();
+    return (
+      <button
+        onClick={toggleTheme}
+        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-electric/30 text-electric hover:bg-electric/10 text-xs font-semibold cursor-pointer transition-all duration-200 active:scale-95 shrink-0"
+        title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
+      >
+        {theme === "light" ? <FiMoon className="w-3 h-3" /> : <FiSun className="w-3 h-3" />}
+        {!compact && <span>{theme === "light" ? "Dark" : "Light"}</span>}
+      </button>
+    );
+  };
+
   return (
-    <div className="flex h-full bg-[#F9FAFB] relative text-text-primary">
+    <div className="flex h-full bg-navy-900 relative text-text-primary">
       {/* ========== Desktop/Tablet Sidebar (≥ 768px) ========== */}
-      <aside className="hidden md:flex flex-col w-64 lg:w-72 shrink-0 border-r border-gray-200 bg-white">
+      <aside className="hidden md:flex flex-col w-64 lg:w-72 shrink-0 border-r border-navy-700 bg-navy-950">
         {/* Sidebar Header */}
-        <div className="px-5 pt-5 pb-4 border-b border-gray-200">
+        <div className="px-5 pt-5 pb-4 border-b border-navy-700">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-electric to-electric-dark flex items-center justify-center shadow-lg shadow-electric/20">
               <FiShield className="w-5 h-5 text-white" />
@@ -113,7 +131,7 @@ function AppContent() {
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all duration-200 cursor-pointer group ${
                   isActive
                     ? "bg-electric/10 text-electric border border-electric/20"
-                    : "text-text-muted hover:text-text-secondary hover:bg-gray-100 border border-transparent"
+                    : "text-text-muted hover:text-text-secondary hover:bg-navy-800 border border-transparent"
                 }`}
               >
                 <span className={`transition-transform duration-200 ${isActive ? "text-electric scale-110" : "text-text-muted group-hover:scale-105"}`}>
@@ -136,7 +154,7 @@ function AppContent() {
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between">
+        <div className="px-4 py-3 border-t border-navy-700 flex items-center justify-between">
           {apiKey ? (
             <div className="flex items-center gap-2 px-2">
               <FiCpu className="w-3.5 h-3.5 text-risk-low animate-pulse" />
@@ -155,9 +173,10 @@ function AppContent() {
           )}
           <div className="flex items-center gap-1.5">
             <LanguageToggle compact />
+            <ThemeToggle compact />
             <button
               onClick={() => setShowSettings(true)}
-              className="p-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-text-secondary cursor-pointer transition-colors"
+              className="p-2 rounded-xl border border-navy-700 hover:bg-navy-800 text-text-secondary cursor-pointer transition-colors"
               title="Settings"
             >
               <FiSettings className="w-4 h-4" />
@@ -169,7 +188,7 @@ function AppContent() {
       {/* ========== Main Content Area ========== */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Bar */}
-        <header className="shrink-0 px-4 md:px-6 lg:px-8 pt-3 pb-2 flex items-center justify-between border-b border-gray-200 bg-white">
+        <header className="shrink-0 px-4 md:px-6 lg:px-8 pt-3 pb-2 flex items-center justify-between border-b border-navy-700 bg-navy-950">
           {/* Mobile: show logo; Desktop: show page title */}
           <div className="flex items-center gap-2 md:hidden">
             <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-electric to-electric-dark flex items-center justify-center">
@@ -187,6 +206,7 @@ function AppContent() {
           </div>
           <div className="flex items-center gap-2">
             <LanguageToggle />
+            <ThemeToggle />
             {apiKey ? (
               <span className="text-[9px] md:text-[11px] font-medium text-risk-low bg-risk-low/10 px-2 py-0.5 rounded-full border border-risk-low/20 flex items-center gap-1">
                 <FiCpu className="w-2.5 h-2.5" />
@@ -198,14 +218,14 @@ function AppContent() {
                 {t.demoActive}
               </span>
             ) : (
-              <span className="text-[9px] md:text-[11px] font-medium text-text-muted bg-gray-100 px-2 py-0.5 rounded-full border border-gray-200 flex items-center gap-1">
+              <span className="text-[9px] md:text-[11px] font-medium text-text-muted bg-navy-800 px-2 py-0.5 rounded-full border border-navy-700 flex items-center gap-1">
                 <FiCpu className="w-2.5 h-2.5" />
                 {t.noKey}
               </span>
             )}
             <button
               onClick={() => setShowSettings(true)}
-              className="p-1.5 rounded-xl border border-gray-200 hover:bg-gray-50 text-text-secondary cursor-pointer transition-colors"
+              className="p-1.5 rounded-xl border border-navy-700 hover:bg-navy-800 text-text-secondary cursor-pointer transition-colors"
               title="Settings"
             >
               <FiSettings className="w-4 h-4" />
@@ -281,7 +301,7 @@ function AppContent() {
         </main>
 
         {/* ========== Mobile Bottom Tab Bar (< 768px) ========== */}
-        <nav className="md:hidden shrink-0 border-t border-gray-200 bg-white/95 backdrop-blur-md">
+        <nav className="md:hidden shrink-0 border-t border-navy-700 bg-navy-950/95 backdrop-blur-md">
           <div className="flex">
             {TABS.map((tab) => {
               const isActive = activeTab === tab.id;
@@ -317,7 +337,7 @@ function AppContent() {
       {showSettings && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-md p-4">
           <div className="glass-card rounded-2xl p-6 sm:p-8 w-full max-w-[420px] animate-scale-in border border-electric/20 space-y-5">
-            <div className="flex items-center justify-between pb-2 border-b border-gray-200">
+            <div className="flex items-center justify-between pb-2 border-b border-navy-700">
               <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
                 <FiSettings className="w-5 h-5 text-text-secondary" /> {t.settingsTitle}
               </h2>
@@ -354,7 +374,7 @@ function AppContent() {
                     value={tempKey}
                     onChange={(e) => setTempKey(e.target.value)}
                     placeholder={tempDemoMode ? t.apiKeyOptional : t.apiKeyPlaceholder}
-                    className="w-full bg-[#F3F4F6] border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:border-electric transition-colors font-mono"
+                    className="w-full bg-navy-800 border border-navy-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:border-electric transition-colors font-mono"
                   />
                 </div>
                 <p className="text-[10px] text-text-muted leading-relaxed">
@@ -386,7 +406,7 @@ function AppContent() {
                     value={tempOpenaiKey}
                     onChange={(e) => setTempOpenaiKey(e.target.value)}
                     placeholder={tempDemoMode ? t.apiKeyOptional : t.openaiKeyPlaceholder}
-                    className="w-full bg-[#F3F4F6] border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:border-electric transition-colors font-mono"
+                    className="w-full bg-navy-800 border border-navy-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:border-electric transition-colors font-mono"
                   />
                 </div>
                 <p className="text-[10px] text-text-muted leading-relaxed">
@@ -395,7 +415,7 @@ function AppContent() {
               </div>
 
               {/* Demo Mode Toggle */}
-              <div className="flex items-center justify-between pt-3 border-t border-gray-150">
+              <div className="flex items-center justify-between pt-3 border-t border-navy-700">
                 <div className="flex flex-col">
                   <span className="text-xs font-bold text-text-secondary">{t.demoModeLabel}</span>
                   <span className="text-[10px] text-text-muted">{t.demoModeDesc}</span>
@@ -404,7 +424,7 @@ function AppContent() {
                   type="button"
                   onClick={() => setTempDemoMode(!tempDemoMode)}
                   className={`w-10 h-6 rounded-full transition-colors cursor-pointer relative flex items-center ${
-                    tempDemoMode ? "bg-electric" : "bg-gray-300"
+                    tempDemoMode ? "bg-electric" : "bg-navy-600"
                   }`}
                 >
                   <div

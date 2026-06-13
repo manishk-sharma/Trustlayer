@@ -40,12 +40,12 @@ function TrustScoreGauge({ score, t }) {
   return (
     <div className="flex flex-col items-center">
       <svg width={radius * 2} height={radius * 2} viewBox={`0 0 ${radius * 2} ${radius * 2}`}>
-        <circle cx={radius} cy={radius} r={normalizedRadius} fill="none" stroke="#E5E7EB" strokeWidth={stroke} strokeLinecap="round" strokeDasharray={`${arcLength} ${circumference}`} transform={`rotate(135 ${radius} ${radius})`} />
+        <circle cx={radius} cy={radius} r={normalizedRadius} fill="none" stroke="var(--navy-700)" strokeWidth={stroke} strokeLinecap="round" strokeDasharray={`${arcLength} ${circumference}`} transform={`rotate(135 ${radius} ${radius})`} />
         <circle cx={radius} cy={radius} r={normalizedRadius} fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="round" strokeDasharray={`${filledLength} ${circumference}`} transform={`rotate(135 ${radius} ${radius})`} style={{ filter: `drop-shadow(0 0 6px ${color}60)`, transition: "stroke-dasharray 0.8s ease-out" }} />
         <text x={radius} y={radius - 8} textAnchor="middle" fill={color} fontSize="32" fontWeight="800" fontFamily="system-ui" style={{ fontVariantNumeric: "tabular-nums" }}>{score}</text>
-        <text x={radius} y={radius + 14} textAnchor="middle" fill="#9CA3AF" fontSize="11" fontWeight="600" fontFamily="system-ui">{label}</text>
-        <text x="18" y={radius * 2 - 12} fill="#6B7280" fontSize="9" fontFamily="system-ui">0</text>
-        <text x={radius * 2 - 26} y={radius * 2 - 12} fill="#6B7280" fontSize="9" fontFamily="system-ui">100</text>
+        <text x={radius} y={radius + 14} textAnchor="middle" fill="var(--text-muted)" fontSize="11" fontWeight="600" fontFamily="system-ui">{label}</text>
+        <text x="18" y={radius * 2 - 12} fill="var(--text-secondary)" fontSize="9" fontFamily="system-ui">0</text>
+        <text x={radius * 2 - 26} y={radius * 2 - 12} fill="var(--text-secondary)" fontSize="9" fontFamily="system-ui">100</text>
       </svg>
     </div>
   );
@@ -67,7 +67,7 @@ function RiskTimeline({ transactions, t }) {
             <div key={txn.id} className="relative z-10 flex flex-col items-center group">
               <div className="w-4 h-4 rounded-full border-2 border-white transition-transform hover:scale-125" style={{ backgroundColor: riskColors[txn.risk_level], boxShadow: `0 0 8px ${riskColors[txn.risk_level]}50` }} />
               <div className="absolute -top-10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                <div className="bg-white rounded-lg px-2 py-1 text-[10px] text-text-secondary whitespace-nowrap border border-gray-200 shadow-lg">
+                <div className="bg-navy-950 rounded-lg px-2 py-1 text-[10px] text-text-secondary whitespace-nowrap border border-navy-700 shadow-lg">
                   {txn.recipient} · ₹{txn.amount}
                 </div>
               </div>
@@ -83,7 +83,7 @@ function RiskTimeline({ transactions, t }) {
 function CustomTooltip({ active, payload }) {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-lg">
+      <div className="bg-navy-950 border border-navy-700 rounded-lg px-3 py-2 shadow-lg">
         <p className="text-xs text-text-primary font-semibold">{payload[0].payload.name}: {payload[0].value}</p>
       </div>
     );
@@ -191,9 +191,9 @@ export default function TrustDashboard({ transactions }) {
         <div style={{ width: '100%', height: 176 }}>
           <ResponsiveContainer width="100%" height={176} minWidth={200}>
             <BarChart data={riskDistribution} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
-              <XAxis dataKey="name" tick={{ fill: "#6B7280", fontSize: 11 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: "#6B7280", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--navy-700)" vertical={false} />
+              <XAxis dataKey="name" tick={{ fill: "var(--text-secondary)", fontSize: 11 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: "var(--text-secondary)", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
               <Tooltip content={<CustomTooltip />} cursor={false} />
               <Bar dataKey="value" radius={[6, 6, 0, 0]} maxBarSize={40}>
                 {riskDistribution.map((entry, index) => (

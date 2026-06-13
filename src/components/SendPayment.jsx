@@ -243,7 +243,7 @@ export default function SendPayment({ onTransactionAdd, apiKey, demoMode, setTab
       </div>
 
       {/* Live Scam Alerts Section (in the requested area) */}
-      <div className="pt-6 border-t border-gray-200/80 space-y-4">
+      <div className="pt-6 border-t border-navy-700 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <FiBell className="w-4.5 h-4.5 text-electric animate-bounce" />
@@ -261,7 +261,7 @@ export default function SendPayment({ onTransactionAdd, apiKey, demoMode, setTab
         {loadingAlerts ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[1, 2, 3].map((n) => (
-              <div key={n} className="bg-white border border-gray-200 rounded-2xl p-4 animate-pulse space-y-3">
+              <div key={n} className="bg-navy-950 border border-navy-700 rounded-2xl p-4 animate-pulse space-y-3">
                 <div className="flex justify-between">
                   <div className="h-3 bg-gray-200 rounded-full w-1/4" />
                   <div className="h-5 bg-gray-200 rounded-xl w-12" />
@@ -305,7 +305,7 @@ export default function SendPayment({ onTransactionAdd, apiKey, demoMode, setTab
                     </p>
                   </div>
                   
-                  <div className="mt-3.5 pt-2.5 border-t border-gray-100 flex items-start gap-1.5 text-[10px] text-electric font-medium">
+                  <div className="mt-3.5 pt-2.5 border-t border-navy-700 flex items-start gap-1.5 text-[10px] text-electric font-medium">
                     <FiShield className="w-3.5 h-3.5 text-electric shrink-0 mt-0.5" />
                     <p className="leading-relaxed">
                       <span className="font-bold">{t.alertsProtectionTip}</span> {alert.tip}

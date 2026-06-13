@@ -240,7 +240,7 @@ export default function VoiceChatbot({ apiKey }) {
 
       {/* Floating Chat Box Window (Compact styling matched to website's light theme cards) */}
       <div
-        className={`fixed z-50 bg-white border border-gray-200 rounded-2xl shadow-2xl transition-all duration-400 ease-[cubic-bezier(0.175,0.885,0.32,1.15)] flex flex-col overflow-hidden
+        className={`fixed z-50 bg-navy-950 border border-navy-700 rounded-2xl shadow-2xl transition-all duration-400 ease-[cubic-bezier(0.175,0.885,0.32,1.15)] flex flex-col overflow-hidden
           bottom-[150px] right-4 md:right-6 w-[calc(100%-32px)] md:w-[380px] h-[500px] md:h-[530px]`}
         style={{
           transform: isOpen ? "translateY(0) scale(1)" : "translateY(50px) scale(0.95)",
@@ -249,7 +249,7 @@ export default function VoiceChatbot({ apiKey }) {
         }}
       >
         {/* Header - White background, gray borders, native brand lock logo */}
-        <div className="shrink-0 px-4 py-3.5 border-b border-gray-200 flex items-center justify-between bg-white">
+        <div className="shrink-0 px-4 py-3.5 border-b border-navy-700 flex items-center justify-between bg-navy-950">
           <div className="flex items-center gap-2.5">
             {/* Brand Shield Avatar in Header */}
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-electric to-electric-dark flex items-center justify-center text-white shadow-md shadow-electric/15 shrink-0">
@@ -291,7 +291,7 @@ export default function VoiceChatbot({ apiKey }) {
         </div>
 
         {/* Chat Messages Scrollable Area */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 flex flex-col bg-[#F9FAFB]">
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 flex flex-col bg-navy-900">
           {messages.map((msg) => {
             const isAi = msg.role === "ai";
             return (
@@ -318,17 +318,17 @@ export default function VoiceChatbot({ apiKey }) {
                   <div
                     className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm ${
                       isAi
-                        ? "bg-white text-text-primary rounded-tl-none border border-gray-200"
+                        ? "bg-navy-950 text-text-primary rounded-tl-none border border-navy-700"
                         : "bg-electric text-white rounded-tr-none"
                     }`}
                   >
                     <p className="whitespace-pre-line">{msg.text}</p>
                     
                     {isAi && (
-                      <div className="flex justify-end mt-1.5 border-t border-gray-100 pt-1.5">
+                      <div className="flex justify-end mt-1.5 border-t border-navy-800 pt-1.5">
                         <button
                           onClick={() => speakResponse(msg.text)}
-                          className="px-2 py-0.5 rounded text-text-muted hover:text-text-primary bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-all cursor-pointer flex items-center gap-1 text-[10px] font-semibold"
+                          className="px-2 py-0.5 rounded text-text-muted hover:text-text-primary bg-navy-900 hover:bg-navy-800 border border-navy-700 transition-all cursor-pointer flex items-center gap-1 text-[10px] font-semibold"
                           title={t.chatReplay}
                         >
                           <FiVolume2 className="w-3 h-3 text-electric" /> {t.chatReplay}
@@ -352,7 +352,7 @@ export default function VoiceChatbot({ apiKey }) {
               </div>
               <div className="flex flex-col">
                 <span className="text-[10px] text-text-muted font-semibold mb-0.5 px-1">{t.chatName}</span>
-                <div className="bg-white text-text-primary rounded-2xl rounded-tl-none px-4 py-3 border border-gray-200 shadow-sm flex items-center gap-1.5">
+                <div className="bg-navy-950 text-text-primary rounded-2xl rounded-tl-none px-4 py-3 border border-navy-700 shadow-sm flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 bg-text-muted rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                   <span className="w-1.5 h-1.5 bg-text-muted rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
                   <span className="w-1.5 h-1.5 bg-text-muted rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
@@ -373,12 +373,12 @@ export default function VoiceChatbot({ apiKey }) {
 
         {/* Suggestion / Quick Reply Chips - White with blue borders and text */}
         {!loading && (
-          <div className="px-4 py-2.5 flex gap-2 overflow-x-auto shrink-0 bg-white border-t border-gray-100 scrollbar-none">
+          <div className="px-4 py-2.5 flex gap-2 overflow-x-auto shrink-0 bg-navy-950 border-t border-navy-800 scrollbar-none">
             {getContextualChips().map((chip, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSendMessage(chip)}
-                className="px-3.5 py-1.5 rounded-full border border-electric/35 text-electric-light hover:bg-electric/5 bg-white text-xs font-semibold cursor-pointer shadow-sm transition-all whitespace-nowrap"
+                className="px-3.5 py-1.5 rounded-full border border-electric/35 text-electric-light hover:bg-electric/5 bg-navy-900 text-xs font-semibold cursor-pointer shadow-sm transition-all whitespace-nowrap"
               >
                 {chip}
               </button>
@@ -387,7 +387,7 @@ export default function VoiceChatbot({ apiKey }) {
         )}
 
         {/* Bottom Input Area - Pill-shaped search bar layout */}
-        <div className="shrink-0 p-3.5 border-t border-gray-100 bg-white">
+        <div className="shrink-0 p-3.5 border-t border-navy-800 bg-navy-950">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -396,7 +396,7 @@ export default function VoiceChatbot({ apiKey }) {
             className="flex items-center gap-2"
           >
             {/* Pill shaped wrapper */}
-            <div className="flex-1 bg-gray-100 rounded-full border border-gray-200 px-4 py-2 flex items-center shadow-inner focus-within:border-electric focus-within:bg-white transition-all">
+            <div className="flex-1 bg-navy-900 rounded-full border border-navy-700 px-4 py-2 flex items-center shadow-inner focus-within:border-electric focus-within:bg-navy-950 transition-all">
               <input
                 type="text"
                 value={inputText}

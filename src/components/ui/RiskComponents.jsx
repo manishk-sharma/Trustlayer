@@ -98,7 +98,7 @@ export function ResultCard({ result, onProceed, onCancel, showActions = false })
           <p className="text-sm text-text-secondary leading-relaxed">
             {result.explanation}
           </p>
-          <div className="flex items-start gap-2 bg-blue-50 rounded-xl p-3">
+          <div className="flex items-start gap-2 bg-electric/10 rounded-xl p-3">
             <FiInfo className="w-4 h-4 text-electric shrink-0 mt-0.5" />
             <p className="text-xs text-electric-light leading-relaxed">
               {result.recommendation}
@@ -108,7 +108,7 @@ export function ResultCard({ result, onProceed, onCancel, showActions = false })
 
         {/* Voice Warning Card */}
         {result.risk_level === "HIGH" && result.hinglish_warning && (
-          <div className="flex items-start gap-2.5 bg-red-50 border border-red-200/50 rounded-xl p-3.5">
+          <div className="flex items-start gap-2.5 bg-risk-high/10 border border-risk-high/25 rounded-xl p-3.5">
             <span className="text-lg mt-0.5 animate-pulse">🔊</span>
             <div className="space-y-1">
               <p className="text-xs font-semibold text-risk-high uppercase tracking-wider">

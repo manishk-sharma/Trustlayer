@@ -128,7 +128,7 @@ export default function TransactionHistory({ transactions }) {
             {searchHistory.map((query, index) => (
               <div key={index} onClick={() => setSearchQuery(query)} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-navy-800 border border-navy-700 text-text-secondary hover:text-text-primary hover:border-electric/30 cursor-pointer transition-colors">
                 <span>{query}</span>
-                <button type="button" onClick={(e) => removeFromHistory(e, query)} className="text-text-muted hover:text-risk-high cursor-pointer flex items-center justify-center p-0.5 rounded-full hover:bg-gray-200 transition-colors">
+                <button type="button" onClick={(e) => removeFromHistory(e, query)} className="text-text-muted hover:text-risk-high cursor-pointer flex items-center justify-center p-0.5 rounded-full hover:bg-navy-700 transition-colors">
                   <FiX className="w-2.5 h-2.5" />
                 </button>
               </div>
@@ -169,7 +169,7 @@ export default function TransactionHistory({ transactions }) {
             {/* Expanded Details */}
             {expandedId === txn.id && (
               <div className="animate-fade-in-up mt-1 ml-2 mr-2">
-                <div className="bg-gray-50 rounded-xl p-4 space-y-3 border border-gray-200">
+                <div className="bg-navy-900 rounded-xl p-4 space-y-3 border border-navy-700">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-text-muted">{t.historyRiskScore}</span>
                     <span className={`text-sm font-bold tabular-nums ${txn.risk_level === "LOW" ? "text-risk-low" : txn.risk_level === "MEDIUM" ? "text-risk-medium" : "text-risk-high"}`}>
@@ -188,7 +188,7 @@ export default function TransactionHistory({ transactions }) {
                     <span className="text-xs text-text-muted">{t.historyAiAnalysis}</span>
                     <p className="text-xs text-text-secondary leading-relaxed">{txn.explanation}</p>
                   </div>
-                  <div className="flex items-start gap-2 bg-blue-50 rounded-lg p-2.5">
+                  <div className="flex items-start gap-2 bg-electric/10 rounded-lg p-2.5">
                     <FiInfo className="w-4 h-4 text-electric shrink-0 mt-0.5" />
                     <p className="text-[11px] text-electric-light leading-relaxed">{txn.recommendation}</p>
                   </div>

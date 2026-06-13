@@ -59,14 +59,14 @@ export default function ScamAlerts({ apiKey, demoMode, setTabError }) {
       {loading && (
         <div className="space-y-4">
           {[1, 2, 3].map((n) => (
-            <div key={n} className="glass-card rounded-2xl p-5 border border-gray-200 animate-pulse space-y-3">
+            <div key={n} className="glass-card rounded-2xl p-5 border border-navy-700 animate-pulse space-y-3">
               <div className="flex justify-between">
-                <div className="h-4 bg-gray-200 rounded-full w-1/4" />
-                <div className="h-6 bg-gray-200 rounded-xl w-16" />
+                <div className="h-4 bg-navy-800 rounded-full w-1/4" />
+                <div className="h-6 bg-navy-800 rounded-xl w-16" />
               </div>
-              <div className="h-3 bg-gray-200 rounded-full w-full" />
-              <div className="h-3 bg-gray-200 rounded-full w-2/3" />
-              <div className="h-8 bg-blue-50/50 rounded-xl w-full" />
+              <div className="h-3 bg-navy-800 rounded-full w-full" />
+              <div className="h-3 bg-navy-800 rounded-full w-2/3" />
+              <div className="h-8 bg-electric/10 rounded-xl w-full" />
             </div>
           ))}
         </div>
@@ -107,7 +107,7 @@ export default function ScamAlerts({ apiKey, demoMode, setTabError }) {
                   
                   <p className="text-sm text-text-secondary leading-relaxed">{alert.summary}</p>
                   
-                  <div className="flex items-start gap-2 bg-blue-50 rounded-xl p-3 border border-blue-100/50">
+                  <div className="flex items-start gap-2 bg-electric/10 rounded-xl p-3 border border-electric/25">
                     <FiShield className="w-4 h-4 text-electric shrink-0 mt-0.5" />
                     <p className="text-xs text-electric-light font-medium leading-relaxed">
                       <span className="font-bold">{t.alertsProtectionTip}</span> {alert.tip}
@@ -122,7 +122,7 @@ export default function ScamAlerts({ apiKey, demoMode, setTabError }) {
 
       {/* Empty State / Trigger */}
       {!loading && !data && (
-        <div className="text-center py-16 glass-card rounded-2xl border border-dashed border-gray-200 p-6">
+        <div className="text-center py-16 glass-card rounded-2xl border border-dashed border-navy-700 p-6">
           <FiBell className="w-12 h-12 text-text-muted mx-auto mb-3 opacity-40" />
           <p className="text-sm text-text-primary font-semibold">{t.alertsNoAlerts}</p>
           <p className="text-xs text-text-muted mt-1">
