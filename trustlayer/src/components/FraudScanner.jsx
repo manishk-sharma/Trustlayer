@@ -3,27 +3,47 @@ import { scanMessage } from "../api/claude";
 import { ResultCard, LoadingCard, ErrorCard } from "./ui/RiskComponents";
 import { FiSearch } from "react-icons/fi";
 
-export default function FraudScanner({ apiKey }) {
+export default function FraudScanner({ apiKey, setTabError }) {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
 
+  const speak = (text) => {
+    if (!text) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "hi-IN";
+    utterance.rate = 0.9;
+    utterance.pitch = 1.1;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  };
+
   const handleScan = async (e) => {
     e.preventDefault();
     if (!message.trim()) return;
 
+    if (!apiKey) {
+      setTabError("⚙️ Please add your Gemini API key in Settings first.");
+      return;
+    }
+
     setLoading(true);
     setResult(null);
     setError(null);
+    setTabError(null);
 
     const res = await scanMessage(message, apiKey);
 
     setLoading(false);
     if (res.success) {
       setResult(res.data);
+      if (res.data.risk_level === "HIGH" && res.data.hinglish_warning) {
+        speak(res.data.hinglish_warning);
+      }
     } else {
       setError(res.error);
+      setTabError(res.error);
     }
   };
 

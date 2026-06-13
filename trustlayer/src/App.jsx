@@ -1,7 +1,21 @@
-import React, { useState, useCallback } from "react";
-import { FiSend, FiSearch, FiClock, FiBarChart2, FiShield, FiLock, FiCpu, FiRefreshCw } from "react-icons/fi";
+import React, { useState, useCallback, useEffect } from "react";
+import {
+  FiSend,
+  FiSearch,
+  FiClock,
+  FiBarChart2,
+  FiShield,
+  FiLock,
+  FiCpu,
+  FiRefreshCw,
+  FiBell,
+  FiSettings,
+  FiX,
+  FiAlertTriangle
+} from "react-icons/fi";
 import SendPayment from "./components/SendPayment";
 import FraudScanner from "./components/FraudScanner";
+import ScamAlerts from "./components/ScamAlerts";
 import TransactionHistory from "./components/TransactionHistory";
 import TrustDashboard from "./components/TrustDashboard";
 import { seedTransactions } from "./data/seedTransactions";
@@ -9,70 +23,10 @@ import { seedTransactions } from "./data/seedTransactions";
 const TABS = [
   { id: "send", label: "Send Payment", shortLabel: "Send", icon: <FiSend className="w-4.5 h-4.5" />, desc: "Send & analyze" },
   { id: "scan", label: "Fraud Scanner", shortLabel: "Scan", icon: <FiSearch className="w-4.5 h-4.5" />, desc: "Scan messages" },
+  { id: "alerts", label: "Scam Alerts", shortLabel: "Alerts", icon: <FiBell className="w-4.5 h-4.5" />, desc: "Live scam alerts" },
   { id: "history", label: "History", shortLabel: "History", icon: <FiClock className="w-4.5 h-4.5" />, desc: "Past transactions" },
   { id: "trust", label: "Trust Score", shortLabel: "Trust", icon: <FiBarChart2 className="w-4.5 h-4.5" />, desc: "Your profile" },
 ];
-
-function ApiKeyModal({ onSubmit }) {
-  const [key, setKey] = useState("");
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-md p-4">
-      <div className="glass-card rounded-2xl p-6 sm:p-8 w-full max-w-[420px] animate-scale-in border border-electric/20 space-y-5">
-        {/* Logo */}
-        <div className="text-center space-y-2">
-          <div className="mx-auto w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-electric to-electric-dark flex items-center justify-center shadow-lg shadow-electric/30">
-            <FiShield className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
-          </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-text-primary">TrustLayer</h1>
-          <p className="text-xs sm:text-sm text-text-muted leading-relaxed">
-            AI-Powered Financial Trust & Micro-Fraud Detection
-          </p>
-        </div>
-
-        <div className="space-y-3">
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
-              Google Gemini API Key
-            </label>
-            <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted">
-                <FiLock className="w-4 h-4" />
-              </span>
-              <input
-                id="api-key-input"
-                type="password"
-                value={key}
-                onChange={(e) => setKey(e.target.value)}
-                placeholder="AIza..."
-                className="w-full bg-navy-800 border border-navy-700 rounded-xl pl-10 pr-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-electric transition-colors font-mono"
-              />
-            </div>
-            <p className="text-[10px] sm:text-xs text-text-muted">
-              Your key is only stored in memory — never sent anywhere except Google's API.
-            </p>
-          </div>
-
-          <button
-            id="api-key-submit"
-            onClick={() => key.trim() && onSubmit(key.trim())}
-            disabled={!key.trim()}
-            className="w-full py-3 rounded-xl text-sm font-bold bg-electric hover:bg-electric-dark disabled:opacity-40 disabled:cursor-not-allowed text-white transition-all cursor-pointer shadow-lg shadow-electric/20 active:scale-[0.98]"
-          >
-            Launch TrustLayer
-          </button>
-
-          <button
-            onClick={() => onSubmit("DEMO_MODE")}
-            className="w-full py-2.5 rounded-xl text-xs font-semibold text-text-muted hover:text-text-secondary bg-navy-800 hover:bg-navy-700 transition-colors cursor-pointer"
-          >
-            Continue in Demo Mode (no API calls)
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function App() {
   const [apiKey, setApiKey] = useState(() => {
@@ -80,25 +34,26 @@ export default function App() {
   });
   const [activeTab, setActiveTab] = useState("send");
   const [transactions, setTransactions] = useState([...seedTransactions]);
+  const [showSettings, setShowSettings] = useState(false);
+  const [tempKey, setTempKey] = useState(apiKey);
+  const [tabError, setTabError] = useState(null);
+
+  useEffect(() => {
+    setTempKey(apiKey);
+  }, [apiKey]);
 
   const handleTransactionAdd = useCallback((txn) => {
     setTransactions((prev) => [txn, ...prev]);
     setActiveTab("history");
   }, []);
 
-  if (!apiKey) {
-    return (
-      <ApiKeyModal
-        onSubmit={(key) => {
-          localStorage.setItem("trustlayer_api_key", key);
-          setApiKey(key);
-        }}
-      />
-    );
-  }
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    setTabError(null);
+  };
 
   return (
-    <div className="flex h-full bg-[#F9FAFB] relative">
+    <div className="flex h-full bg-[#F9FAFB] relative text-text-primary">
       {/* ========== Desktop/Tablet Sidebar (≥ 768px) ========== */}
       <aside className="hidden md:flex flex-col w-64 lg:w-72 shrink-0 border-r border-gray-200 bg-white">
         {/* Sidebar Header */}
@@ -124,14 +79,14 @@ export default function App() {
               <button
                 key={tab.id}
                 id={`sidebar-${tab.id}`}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => handleTabChange(tab.id)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all duration-200 cursor-pointer group ${
                   isActive
                     ? "bg-electric/10 text-electric border border-electric/20"
-                    : "text-text-muted hover:text-text-secondary hover:bg-navy-800/60 border border-transparent"
+                    : "text-text-muted hover:text-text-secondary hover:bg-gray-100 border border-transparent"
                 }`}
               >
-                <span className={`text-text-muted transition-transform duration-200 ${isActive ? "text-electric scale-110" : "group-hover:scale-105"}`}>
+                <span className={`transition-transform duration-200 ${isActive ? "text-electric scale-110" : "text-text-muted group-hover:scale-105"}`}>
                   {tab.icon}
                 </span>
                 <div>
@@ -152,26 +107,23 @@ export default function App() {
 
         {/* Sidebar Footer */}
         <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between">
-          {apiKey !== "DEMO_MODE" ? (
+          {apiKey ? (
             <div className="flex items-center gap-2 px-2">
               <FiCpu className="w-3.5 h-3.5 text-risk-low animate-pulse" />
               <span className="text-[11px] font-medium text-risk-low">AI Active</span>
             </div>
           ) : (
             <div className="flex items-center gap-2 px-2">
-              <FiCpu className="w-3.5 h-3.5 text-risk-medium" />
-              <span className="text-[11px] font-medium text-risk-medium">Demo Mode</span>
+              <FiCpu className="w-3.5 h-3.5 text-text-muted" />
+              <span className="text-[11px] font-medium text-text-muted">No API Key</span>
             </div>
           )}
           <button
-            onClick={() => {
-              localStorage.removeItem("trustlayer_api_key");
-              setApiKey(null);
-            }}
-            className="text-[10px] text-text-muted hover:text-text-secondary flex items-center gap-1 cursor-pointer hover:underline"
+            onClick={() => setShowSettings(true)}
+            className="p-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-text-secondary cursor-pointer transition-colors"
+            title="Settings"
           >
-            <FiRefreshCw className="w-2.5 h-2.5" />
-            Reset Key
+            <FiSettings className="w-4 h-4" />
           </button>
         </div>
       </aside>
@@ -179,7 +131,7 @@ export default function App() {
       {/* ========== Main Content Area ========== */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Bar */}
-        <header className="shrink-0 px-4 md:px-6 lg:px-8 pt-3 pb-2 flex items-center justify-between border-b border-gray-200">
+        <header className="shrink-0 px-4 md:px-6 lg:px-8 pt-3 pb-2 flex items-center justify-between border-b border-gray-200 bg-white">
           {/* Mobile: show logo; Desktop: show page title */}
           <div className="flex items-center gap-2 md:hidden">
             <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-electric to-electric-dark flex items-center justify-center">
@@ -196,27 +148,23 @@ export default function App() {
             </h2>
           </div>
           <div className="flex items-center gap-2">
-            {apiKey !== "DEMO_MODE" && (
-              <span className="text-[9px] md:text-[11px] font-medium text-risk-low bg-risk-low/10 px-2 py-0.5 rounded-full border border-risk-low/20 md:hidden flex items-center gap-1">
+            {apiKey ? (
+              <span className="text-[9px] md:text-[11px] font-medium text-risk-low bg-risk-low/10 px-2 py-0.5 rounded-full border border-risk-low/20 flex items-center gap-1">
                 <FiCpu className="w-2.5 h-2.5" />
                 AI Active
               </span>
-            )}
-            {apiKey === "DEMO_MODE" && (
-              <span className="text-[9px] md:text-[11px] font-medium text-risk-medium bg-risk-medium/10 px-2 py-0.5 rounded-full border border-risk-medium/20 md:hidden flex items-center gap-1">
+            ) : (
+              <span className="text-[9px] md:text-[11px] font-medium text-text-muted bg-gray-100 px-2 py-0.5 rounded-full border border-gray-200 flex items-center gap-1">
                 <FiCpu className="w-2.5 h-2.5" />
-                Demo Mode
+                No Key
               </span>
             )}
             <button
-              onClick={() => {
-                localStorage.removeItem("trustlayer_api_key");
-                setApiKey(null);
-              }}
-              className="text-[9px] md:hidden text-text-muted hover:text-text-secondary cursor-pointer border border-gray-200 px-2 py-0.5 rounded-full flex items-center gap-0.5"
+              onClick={() => setShowSettings(true)}
+              className="p-1.5 rounded-xl border border-gray-200 hover:bg-gray-50 text-text-secondary cursor-pointer transition-colors"
+              title="Settings"
             >
-              <FiRefreshCw className="w-2 h-2" />
-              Reset Key
+              <FiSettings className="w-4 h-4" />
             </button>
           </div>
         </header>
@@ -224,14 +172,42 @@ export default function App() {
         {/* Content Area */}
         <main className="flex-1 overflow-y-auto px-4 pt-4 md:px-6 lg:px-8 md:pt-6">
           <div className="max-w-3xl mx-auto">
+            {/* Red Dismissible Banner */}
+            {tabError && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center justify-between animate-fade-in-up mb-4">
+                <div className="flex items-center gap-2 text-sm">
+                  <FiAlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+                  <span>{tabError}</span>
+                </div>
+                <button
+                  onClick={() => setTabError(null)}
+                  className="text-red-500 hover:text-red-700 cursor-pointer p-0.5 flex items-center"
+                >
+                  <FiX className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
             <div key={activeTab} className="animate-fade-in-up">
               {activeTab === "send" && (
                 <SendPayment
                   onTransactionAdd={handleTransactionAdd}
                   apiKey={apiKey}
+                  setTabError={setTabError}
                 />
               )}
-              {activeTab === "scan" && <FraudScanner apiKey={apiKey} />}
+              {activeTab === "scan" && (
+                <FraudScanner
+                  apiKey={apiKey}
+                  setTabError={setTabError}
+                />
+              )}
+              {activeTab === "alerts" && (
+                <ScamAlerts
+                  apiKey={apiKey}
+                  setTabError={setTabError}
+                />
+              )}
               {activeTab === "history" && (
                 <TransactionHistory transactions={transactions} />
               )}
@@ -251,7 +227,7 @@ export default function App() {
                 <button
                   key={tab.id}
                   id={`tab-${tab.id}`}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => handleTabChange(tab.id)}
                   className={`flex-1 flex flex-col items-center gap-0.5 py-2.5 relative transition-colors duration-200 cursor-pointer ${
                     isActive ? "text-electric" : "text-text-muted hover:text-text-secondary"
                   }`}
@@ -274,6 +250,60 @@ export default function App() {
           <div className="h-[env(safe-area-inset-bottom)]" />
         </nav>
       </div>
+
+      {/* ========== API Settings Modal ========== */}
+      {showSettings && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-md p-4">
+          <div className="glass-card rounded-2xl p-6 sm:p-8 w-full max-w-[420px] animate-scale-in border border-electric/20 space-y-5">
+            <div className="flex items-center justify-between pb-2 border-b border-gray-200">
+              <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
+                <FiSettings className="w-5 h-5 text-text-secondary" /> Gemini API Settings
+              </h2>
+              <button
+                onClick={() => setShowSettings(false)}
+                className="text-text-muted hover:text-text-secondary cursor-pointer"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                  Enter Gemini API Key
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted">
+                    <FiLock className="w-4 h-4" />
+                  </span>
+                  <input
+                    type="password"
+                    value={tempKey}
+                    onChange={(e) => setTempKey(e.target.value)}
+                    placeholder="AIza..."
+                    className="w-full bg-[#F3F4F6] border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:border-electric transition-colors font-mono"
+                  />
+                </div>
+                <p className="text-[10px] text-text-muted leading-relaxed">
+                  Your key stays in browser memory only. Never stored.
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  setApiKey(tempKey);
+                  localStorage.setItem("trustlayer_api_key", tempKey);
+                  setTabError(null);
+                  setShowSettings(false);
+                }}
+                className="w-full py-2.5 rounded-xl text-sm font-bold bg-electric hover:bg-electric-dark text-white transition-all cursor-pointer shadow-lg shadow-electric/20"
+              >
+                Save Settings
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

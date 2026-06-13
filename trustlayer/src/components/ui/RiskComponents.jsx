@@ -97,6 +97,21 @@ export function ResultCard({ result, onProceed, onCancel, showActions = false })
           </div>
         </div>
 
+        {/* Hinglish Voice Warning Card */}
+        {result.risk_level === "HIGH" && result.hinglish_warning && (
+          <div className="flex items-start gap-2.5 bg-red-50 border border-red-200/50 rounded-xl p-3.5">
+            <span className="text-lg mt-0.5 animate-pulse">🔊</span>
+            <div className="space-y-1">
+              <p className="text-xs font-semibold text-risk-high uppercase tracking-wider">
+                Hinglish Voice Warning
+              </p>
+              <p className="text-xs text-text-secondary leading-relaxed font-medium">
+                "{result.hinglish_warning}"
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Red Flags (for scanner) */}
         {result.red_flags && result.red_flags.length > 0 && (
           <div className="space-y-2">
