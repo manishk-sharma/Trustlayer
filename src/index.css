@@ -34,14 +34,14 @@
 }
 
 :root.dark {
-  --navy-950: #161B22; /* GitHub dark box background */
-  --navy-900: #0D1117; /* GitHub dark canvas background */
-  --navy-800: #21262D; /* GitHub dark input background */
+  --navy-950: #0D1117; /* GitHub dark card surface background */
+  --navy-900: #010409; /* GitHub dark canvas background */
+  --navy-800: #161B22; /* GitHub dark input/nested container background */
   --navy-700: #30363D; /* GitHub dark border */
-  --navy-600: #8B949E; /* GitHub dark muted border/text */
+  --navy-600: #484F58; /* GitHub dark muted border/icon color */
   
-  --text-primary: #C9D1D9; /* GitHub dark primary text */
-  --text-secondary: #8B949E; /* GitHub dark secondary text */
+  --text-primary: #F0F6FC; /* GitHub dark primary text color */
+  --text-secondary: #8B949E; /* GitHub dark secondary text color */
   --text-muted: #484F58; /* GitHub dark muted text */
 }
 
