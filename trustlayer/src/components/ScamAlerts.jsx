@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { fetchScamAlerts } from "../api/claude";
+import { fetchScamAlerts } from "../api/api";
 import { FiBell, FiRefreshCw, FiAlertTriangle, FiShield } from "react-icons/fi";
 
 export default function ScamAlerts({ apiKey, setTabError }) {

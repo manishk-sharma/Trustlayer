@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { scanMessage } from "../api/claude";
+import { scanMessage } from "../api/api";
 import { ResultCard, LoadingCard, ErrorCard } from "./ui/RiskComponents";
 import { FiSearch } from "react-icons/fi";
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { analyzePayment } from "../api/claude";
+import { analyzePayment } from "../api/api";
 import { ResultCard, LoadingCard, ErrorCard } from "./ui/RiskComponents";
 import { FiShield } from "react-icons/fi";
 
