@@ -11,7 +11,8 @@ import {
   FiBell,
   FiSettings,
   FiX,
-  FiAlertTriangle
+  FiAlertTriangle,
+  FiGlobe
 } from "react-icons/fi";
 import SendPayment from "./components/SendPayment";
 import FraudScanner from "./components/FraudScanner";
@@ -19,28 +20,44 @@ import ScamAlerts from "./components/ScamAlerts";
 import TransactionHistory from "./components/TransactionHistory";
 import TrustDashboard from "./components/TrustDashboard";
 import { seedTransactions } from "./data/seedTransactions";
+import VoiceChatbot from "./components/VoiceChatbot";
+import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 
-const TABS = [
-  { id: "send", label: "Send Payment", shortLabel: "Send", icon: <FiSend className="w-4.5 h-4.5" />, desc: "Send & analyze" },
-  { id: "scan", label: "Fraud Scanner", shortLabel: "Scan", icon: <FiSearch className="w-4.5 h-4.5" />, desc: "Scan messages" },
-  { id: "alerts", label: "Scam Alerts", shortLabel: "Alerts", icon: <FiBell className="w-4.5 h-4.5" />, desc: "Live scam alerts" },
-  { id: "history", label: "History", shortLabel: "History", icon: <FiClock className="w-4.5 h-4.5" />, desc: "Past transactions" },
-  { id: "trust", label: "Trust Score", shortLabel: "Trust", icon: <FiBarChart2 className="w-4.5 h-4.5" />, desc: "Your profile" },
-];
+function AppContent() {
+  const { lang, toggleLang, t } = useLanguage();
 
-export default function App() {
+  const TABS = [
+    { id: "send", label: t.tabSend, shortLabel: t.tabSendShort, icon: <FiSend className="w-4.5 h-4.5" />, desc: t.tabSendDesc },
+    { id: "scan", label: t.tabScan, shortLabel: t.tabScanShort, icon: <FiSearch className="w-4.5 h-4.5" />, desc: t.tabScanDesc },
+    { id: "alerts", label: t.tabAlerts, shortLabel: t.tabAlertsShort, icon: <FiBell className="w-4.5 h-4.5" />, desc: t.tabAlertsDesc },
+    { id: "history", label: t.tabHistory, shortLabel: t.tabHistoryShort, icon: <FiClock className="w-4.5 h-4.5" />, desc: t.tabHistoryDesc },
+    { id: "trust", label: t.tabTrust, shortLabel: t.tabTrustShort, icon: <FiBarChart2 className="w-4.5 h-4.5" />, desc: t.tabTrustDesc },
+  ];
+
   const [apiKey, setApiKey] = useState(() => {
-    return localStorage.getItem("trustlayer_api_key") || import.meta.env.VITE_GEMINI_API_KEY || "";
+    return localStorage.getItem("trustlayer_openrouter_api_key") || import.meta.env.VITE_OPENROUTER_API_KEY || "";
+  });
+  const [openaiKey, setOpenaiKey] = useState(() => {
+    return localStorage.getItem("trustlayer_openai_api_key") || import.meta.env.VITE_OPENAI_API_KEY || "";
+  });
+  const [demoMode, setDemoMode] = useState(() => {
+    return localStorage.getItem("trustlayer_demo_mode") === "true";
   });
   const [activeTab, setActiveTab] = useState("send");
   const [transactions, setTransactions] = useState([...seedTransactions]);
   const [showSettings, setShowSettings] = useState(false);
   const [tempKey, setTempKey] = useState(apiKey);
+  const [tempOpenaiKey, setTempOpenaiKey] = useState(openaiKey);
+  const [tempDemoMode, setTempDemoMode] = useState(demoMode);
   const [tabError, setTabError] = useState(null);
 
   useEffect(() => {
-    setTempKey(apiKey);
-  }, [apiKey]);
+    if (showSettings) {
+      setTempKey(apiKey);
+      setTempOpenaiKey(openaiKey);
+      setTempDemoMode(demoMode);
+    }
+  }, [showSettings, apiKey, openaiKey, demoMode]);
 
   const handleTransactionAdd = useCallback((txn) => {
     setTransactions((prev) => [txn, ...prev]);
@@ -51,6 +68,19 @@ export default function App() {
     setActiveTab(tabId);
     setTabError(null);
   };
+
+  // Language toggle button component
+  const LanguageToggle = ({ compact = false }) => (
+    <button
+      onClick={toggleLang}
+      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-electric/30 text-electric hover:bg-electric/10 text-xs font-semibold cursor-pointer transition-all duration-200 active:scale-95 shrink-0"
+      title={lang === "en" ? "Switch to Hindi" : "Switch to English"}
+    >
+      <FiGlobe className="w-3 h-3" />
+      {!compact && <span>{lang === "en" ? "हिंदी" : "English"}</span>}
+      {compact && <span>{lang === "en" ? "HI" : "EN"}</span>}
+    </button>
+  );
 
   return (
     <div className="flex h-full bg-[#F9FAFB] relative text-text-primary">
@@ -64,9 +94,9 @@ export default function App() {
             </div>
             <div>
               <span className="text-base font-bold text-text-primary tracking-tight">
-                TrustLayer
+                {t.appName}
               </span>
-              <p className="text-[10px] text-text-muted">AI Fraud Detection</p>
+              <p className="text-[10px] text-text-muted">{t.appSubtitle}</p>
             </div>
           </div>
         </div>
@@ -110,21 +140,29 @@ export default function App() {
           {apiKey ? (
             <div className="flex items-center gap-2 px-2">
               <FiCpu className="w-3.5 h-3.5 text-risk-low animate-pulse" />
-              <span className="text-[11px] font-medium text-risk-low">AI Active</span>
+              <span className="text-[11px] font-medium text-risk-low">{t.aiActive}</span>
+            </div>
+          ) : demoMode ? (
+            <div className="flex items-center gap-2 px-2">
+              <FiCpu className="w-3.5 h-3.5 text-electric animate-pulse" />
+              <span className="text-[11px] font-medium text-electric">{t.demoActive}</span>
             </div>
           ) : (
             <div className="flex items-center gap-2 px-2">
               <FiCpu className="w-3.5 h-3.5 text-text-muted" />
-              <span className="text-[11px] font-medium text-text-muted">No API Key</span>
+              <span className="text-[11px] font-medium text-text-muted">{t.noKey}</span>
             </div>
           )}
-          <button
-            onClick={() => setShowSettings(true)}
-            className="p-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-text-secondary cursor-pointer transition-colors"
-            title="Settings"
-          >
-            <FiSettings className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-1.5">
+            <LanguageToggle compact />
+            <button
+              onClick={() => setShowSettings(true)}
+              className="p-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-text-secondary cursor-pointer transition-colors"
+              title="Settings"
+            >
+              <FiSettings className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -138,25 +176,31 @@ export default function App() {
               <FiShield className="w-4 h-4 text-white" />
             </div>
             <span className="text-sm font-bold text-text-primary tracking-tight">
-              TrustLayer
+              {t.appName}
             </span>
           </div>
           <div className="hidden md:flex items-center gap-2">
-            <span className="text-text-secondary">{TABS.find(t => t.id === activeTab)?.icon}</span>
+            <span className="text-text-secondary">{TABS.find(tab => tab.id === activeTab)?.icon}</span>
             <h2 className="text-base font-bold text-text-primary">
-              {TABS.find(t => t.id === activeTab)?.label}
+              {TABS.find(tab => tab.id === activeTab)?.label}
             </h2>
           </div>
           <div className="flex items-center gap-2">
+            <LanguageToggle />
             {apiKey ? (
               <span className="text-[9px] md:text-[11px] font-medium text-risk-low bg-risk-low/10 px-2 py-0.5 rounded-full border border-risk-low/20 flex items-center gap-1">
                 <FiCpu className="w-2.5 h-2.5" />
-                AI Active
+                {t.aiActive}
+              </span>
+            ) : demoMode ? (
+              <span className="text-[9px] md:text-[11px] font-medium text-electric bg-electric/10 px-2 py-0.5 rounded-full border border-electric/20 flex items-center gap-1">
+                <FiCpu className="w-2.5 h-2.5" />
+                {t.demoActive}
               </span>
             ) : (
               <span className="text-[9px] md:text-[11px] font-medium text-text-muted bg-gray-100 px-2 py-0.5 rounded-full border border-gray-200 flex items-center gap-1">
                 <FiCpu className="w-2.5 h-2.5" />
-                No Key
+                {t.noKey}
               </span>
             )}
             <button
@@ -175,16 +219,31 @@ export default function App() {
             {/* Red Dismissible Banner */}
             {tabError && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center justify-between animate-fade-in-up mb-4">
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-2 text-sm flex-1 mr-2">
                   <FiAlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
                   <span>{tabError}</span>
                 </div>
-                <button
-                  onClick={() => setTabError(null)}
-                  className="text-red-500 hover:text-red-700 cursor-pointer p-0.5 flex items-center"
-                >
-                  <FiX className="w-4 h-4" />
-                </button>
+                <div className="flex items-center gap-2 shrink-0">
+                  {(tabError.toLowerCase().includes("key") ||
+                    tabError.toLowerCase().includes("quota") ||
+                    tabError.toLowerCase().includes("settings") ||
+                    tabError.toLowerCase().includes("rate limit") ||
+                    tabError.toLowerCase().includes("unauthorized") ||
+                    tabError.toLowerCase().includes("invalid")) && (
+                    <button
+                      onClick={() => setShowSettings(true)}
+                      className="px-2.5 py-1 bg-red-100 hover:bg-red-200 text-red-800 rounded-lg text-xs font-semibold transition-colors cursor-pointer mr-1"
+                    >
+                      {t.configureKey}
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setTabError(null)}
+                    className="text-red-500 hover:text-red-700 cursor-pointer p-0.5 flex items-center"
+                  >
+                    <FiX className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             )}
 
@@ -193,18 +252,21 @@ export default function App() {
                 <SendPayment
                   onTransactionAdd={handleTransactionAdd}
                   apiKey={apiKey}
+                  demoMode={demoMode}
                   setTabError={setTabError}
                 />
               )}
               {activeTab === "scan" && (
                 <FraudScanner
                   apiKey={apiKey}
+                  demoMode={demoMode}
                   setTabError={setTabError}
                 />
               )}
               {activeTab === "alerts" && (
                 <ScamAlerts
                   apiKey={apiKey}
+                  demoMode={demoMode}
                   setTabError={setTabError}
                 />
               )}
@@ -257,7 +319,7 @@ export default function App() {
           <div className="glass-card rounded-2xl p-6 sm:p-8 w-full max-w-[420px] animate-scale-in border border-electric/20 space-y-5">
             <div className="flex items-center justify-between pb-2 border-b border-gray-200">
               <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
-                <FiSettings className="w-5 h-5 text-text-secondary" /> Gemini API Settings
+                <FiSettings className="w-5 h-5 text-text-secondary" /> {t.settingsTitle}
               </h2>
               <button
                 onClick={() => setShowSettings(false)}
@@ -267,11 +329,22 @@ export default function App() {
               </button>
             </div>
 
-            <div className="space-y-4">
+             <div className="space-y-4">
+              {/* OpenRouter API Key */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
-                  Enter Gemini API Key
-                </label>
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                    {t.apiKeyLabel}
+                  </label>
+                  {apiKey && (
+                    <button
+                      onClick={() => setTempKey("")}
+                      className="text-[10px] text-red-500 hover:text-red-600 font-semibold cursor-pointer"
+                    >
+                      {t.apiKeyClear}
+                    </button>
+                  )}
+                </div>
                 <div className="relative">
                   <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted">
                     <FiLock className="w-4 h-4" />
@@ -280,30 +353,98 @@ export default function App() {
                     type="password"
                     value={tempKey}
                     onChange={(e) => setTempKey(e.target.value)}
-                    placeholder="AIza..."
+                    placeholder={tempDemoMode ? t.apiKeyOptional : t.apiKeyPlaceholder}
                     className="w-full bg-[#F3F4F6] border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:border-electric transition-colors font-mono"
                   />
                 </div>
                 <p className="text-[10px] text-text-muted leading-relaxed">
-                  Your key stays in browser memory only. Never stored.
+                  {t.apiKeyNote}
                 </p>
+              </div>
+
+              {/* OpenAI API Key */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                    {t.openaiKeyLabel}
+                  </label>
+                  {openaiKey && (
+                    <button
+                      onClick={() => setTempOpenaiKey("")}
+                      className="text-[10px] text-red-500 hover:text-red-600 font-semibold cursor-pointer"
+                    >
+                      {t.apiKeyClear}
+                    </button>
+                  )}
+                </div>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted">
+                    <FiLock className="w-4 h-4" />
+                  </span>
+                  <input
+                    type="password"
+                    value={tempOpenaiKey}
+                    onChange={(e) => setTempOpenaiKey(e.target.value)}
+                    placeholder={tempDemoMode ? t.apiKeyOptional : t.openaiKeyPlaceholder}
+                    className="w-full bg-[#F3F4F6] border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:border-electric transition-colors font-mono"
+                  />
+                </div>
+                <p className="text-[10px] text-text-muted leading-relaxed">
+                  Required for OpenAI Whisper Speech-to-Text. Falls back to browser Web Speech API.
+                </p>
+              </div>
+
+              {/* Demo Mode Toggle */}
+              <div className="flex items-center justify-between pt-3 border-t border-gray-150">
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold text-text-secondary">{t.demoModeLabel}</span>
+                  <span className="text-[10px] text-text-muted">{t.demoModeDesc}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setTempDemoMode(!tempDemoMode)}
+                  className={`w-10 h-6 rounded-full transition-colors cursor-pointer relative flex items-center ${
+                    tempDemoMode ? "bg-electric" : "bg-gray-300"
+                  }`}
+                >
+                  <div
+                    className={`w-4 h-4 rounded-full bg-white transition-transform absolute ${
+                      tempDemoMode ? "translate-x-5" : "translate-x-1"
+                    }`}
+                  />
+                </button>
               </div>
 
               <button
                 onClick={() => {
                   setApiKey(tempKey);
-                  localStorage.setItem("trustlayer_api_key", tempKey);
+                  localStorage.setItem("trustlayer_openrouter_api_key", tempKey);
+                  setOpenaiKey(tempOpenaiKey);
+                  localStorage.setItem("trustlayer_openai_api_key", tempOpenaiKey);
+                  setDemoMode(tempDemoMode);
+                  localStorage.setItem("trustlayer_demo_mode", tempDemoMode ? "true" : "false");
                   setTabError(null);
                   setShowSettings(false);
                 }}
                 className="w-full py-2.5 rounded-xl text-sm font-bold bg-electric hover:bg-electric-dark text-white transition-all cursor-pointer shadow-lg shadow-electric/20"
               >
-                Save Settings
+                {t.saveSettings}
               </button>
             </div>
           </div>
         </div>
       )}
+      
+      {/* Floating AI Voice Assistant Chatbot */}
+      <VoiceChatbot apiKey={apiKey} />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 }

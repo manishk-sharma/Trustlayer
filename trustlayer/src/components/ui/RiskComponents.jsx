@@ -1,31 +1,36 @@
 import React from "react";
 import { FiAlertTriangle, FiInfo, FiXCircle, FiAlertCircle } from "react-icons/fi";
+import { useLanguage } from "../../context/LanguageContext";
 
-const riskConfig = {
-  LOW: {
-    color: "text-risk-low",
-    bg: "bg-risk-low/15",
-    border: "border-risk-low/30",
-    label: "LOW RISK",
-    barColor: "#10B981",
-  },
-  MEDIUM: {
-    color: "text-risk-medium",
-    bg: "bg-risk-medium/15",
-    border: "border-risk-medium/30",
-    label: "MEDIUM RISK",
-    barColor: "#F59E0B",
-  },
-  HIGH: {
-    color: "text-risk-high",
-    bg: "bg-risk-high/15",
-    border: "border-risk-high/30",
-    label: "HIGH RISK",
-    barColor: "#EF4444",
-  },
-};
+function useRiskConfig() {
+  const { t } = useLanguage();
+  return {
+    LOW: {
+      color: "text-risk-low",
+      bg: "bg-risk-low/15",
+      border: "border-risk-low/30",
+      label: t.riskLow,
+      barColor: "#10B981",
+    },
+    MEDIUM: {
+      color: "text-risk-medium",
+      bg: "bg-risk-medium/15",
+      border: "border-risk-medium/30",
+      label: t.riskMedium,
+      barColor: "#F59E0B",
+    },
+    HIGH: {
+      color: "text-risk-high",
+      bg: "bg-risk-high/15",
+      border: "border-risk-high/30",
+      label: t.riskHigh,
+      barColor: "#EF4444",
+    },
+  };
+}
 
 export function RiskBadge({ level }) {
+  const riskConfig = useRiskConfig();
   const cfg = riskConfig[level] || riskConfig.LOW;
   return (
     <span
@@ -40,11 +45,13 @@ export function RiskBadge({ level }) {
 }
 
 export function RiskScoreBar({ score, level }) {
+  const { t } = useLanguage();
+  const riskConfig = useRiskConfig();
   const cfg = riskConfig[level] || riskConfig.LOW;
   return (
     <div className="w-full">
       <div className="flex justify-between items-center mb-1.5">
-        <span className="text-xs text-text-secondary">Risk Score</span>
+        <span className="text-xs text-text-secondary">{t.riskScoreLabel}</span>
         <span className={`text-sm font-bold tabular-nums ${cfg.color}`}>
           {score}/100
         </span>
@@ -64,6 +71,8 @@ export function RiskScoreBar({ score, level }) {
 }
 
 export function ResultCard({ result, onProceed, onCancel, showActions = false }) {
+  const { t } = useLanguage();
+  const riskConfig = useRiskConfig();
   if (!result) return null;
 
   const cfg = riskConfig[result.risk_level] || riskConfig.LOW;
@@ -97,13 +106,13 @@ export function ResultCard({ result, onProceed, onCancel, showActions = false })
           </div>
         </div>
 
-        {/* Hinglish Voice Warning Card */}
+        {/* Voice Warning Card */}
         {result.risk_level === "HIGH" && result.hinglish_warning && (
           <div className="flex items-start gap-2.5 bg-red-50 border border-red-200/50 rounded-xl p-3.5">
             <span className="text-lg mt-0.5 animate-pulse">🔊</span>
             <div className="space-y-1">
               <p className="text-xs font-semibold text-risk-high uppercase tracking-wider">
-                Hinglish Voice Warning
+                {t.hinglishWarningLabel}
               </p>
               <p className="text-xs text-text-secondary leading-relaxed font-medium">
                 "{result.hinglish_warning}"
@@ -116,7 +125,7 @@ export function ResultCard({ result, onProceed, onCancel, showActions = false })
         {result.red_flags && result.red_flags.length > 0 && (
           <div className="space-y-2">
             <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
-              Red Flags Detected
+              {t.redFlagsLabel}
             </p>
             <div className="flex flex-wrap gap-1.5">
               {result.red_flags.map((flag, i) => (
@@ -138,7 +147,7 @@ export function ResultCard({ result, onProceed, onCancel, showActions = false })
               onClick={onCancel}
               className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-navy-700 text-text-secondary hover:bg-navy-600 transition-colors cursor-pointer"
             >
-              Cancel Payment
+              {t.cancelButton}
             </button>
             <button
               onClick={onProceed}
@@ -150,10 +159,10 @@ export function ResultCard({ result, onProceed, onCancel, showActions = false })
             >
               {result.risk_level === "HIGH" ? (
                 <span className="flex items-center justify-center gap-1.5">
-                  <FiAlertTriangle className="w-3.5 h-3.5" /> Proceed Anyway
+                  <FiAlertTriangle className="w-3.5 h-3.5" /> {t.proceedButton}
                 </span>
               ) : (
-                "Proceed"
+                t.proceedSafe
               )}
             </button>
           </div>
@@ -164,6 +173,7 @@ export function ResultCard({ result, onProceed, onCancel, showActions = false })
 }
 
 export function LoadingCard() {
+  const { t } = useLanguage();
   return (
     <div className="animate-fade-in-up">
       <div className="glass-card rounded-2xl p-6 space-y-4 animate-pulse-glow border border-electric/20">
@@ -172,12 +182,8 @@ export function LoadingCard() {
             <div className="w-8 h-8 border-2 border-electric/30 border-t-electric rounded-full animate-spin-slow" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-electric-light">
-              Analyzing with AI...
-            </p>
-            <p className="text-xs text-text-muted mt-0.5">
-              Gemini is evaluating risk patterns
-            </p>
+            <p className="text-sm font-semibold text-electric-light">{t.analyzingWithAI}</p>
+            <p className="text-xs text-text-muted mt-0.5">{t.aiEvaluating}</p>
           </div>
         </div>
         <div className="space-y-2">
@@ -191,12 +197,13 @@ export function LoadingCard() {
 }
 
 export function ErrorCard({ message, onRetry }) {
+  const { t } = useLanguage();
   return (
     <div className="animate-fade-in-up">
       <div className="glass-card rounded-2xl p-5 border border-risk-high/20 space-y-3">
         <div className="flex items-center gap-2">
           <FiXCircle className="w-5 h-5 text-risk-high" />
-          <p className="text-sm font-semibold text-risk-high">Analysis Failed</p>
+          <p className="text-sm font-semibold text-risk-high">{t.analysisFailed}</p>
         </div>
         <p className="text-xs text-text-secondary leading-relaxed">{message}</p>
         {onRetry && (
@@ -204,7 +211,7 @@ export function ErrorCard({ message, onRetry }) {
             onClick={onRetry}
             className="w-full py-2 rounded-xl text-sm font-semibold bg-navy-700 text-text-secondary hover:bg-navy-600 transition-colors cursor-pointer"
           >
-            Try Again
+            {t.tryAgain}
           </button>
         )}
       </div>
