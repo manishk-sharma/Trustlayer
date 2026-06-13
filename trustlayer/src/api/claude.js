@@ -138,7 +138,7 @@ async function callGemini(model, systemPrompt, userMessage, apiKey, retries = 1)
 
     const data = await response.json();
     const text = data.candidates[0].content.parts[0].text;
-    const parsed = JSON.parse(text);
+    const parsed = robustParseJson(text);
     console.log(`✅ Success with model: ${model}`);
     return { success: true, data: parsed };
   } catch (error) {
@@ -149,4 +149,49 @@ async function callGemini(model, systemPrompt, userMessage, apiKey, retries = 1)
       error: error.message || "Failed to analyze. Please try again.",
     };
   }
+}
+
+function robustParseJson(rawText) {
+  let cleanStr = rawText.trim();
+  
+  // Remove markdown code fences
+  if (cleanStr.startsWith("```json")) {
+    cleanStr = cleanStr.slice(7);
+  } else if (cleanStr.startsWith("```")) {
+    cleanStr = cleanStr.slice(3);
+  }
+  if (cleanStr.endsWith("```")) {
+    cleanStr = cleanStr.slice(0, -3);
+  }
+  cleanStr = cleanStr.trim();
+
+  // Escape unescaped control characters inside JSON strings
+  let processed = "";
+  let inString = false;
+  for (let i = 0; i < cleanStr.length; i++) {
+    const char = cleanStr[i];
+    // Check for unescaped double quotes to toggle inString
+    if (char === '"' && cleanStr[i - 1] !== '\\') {
+      inString = !inString;
+    }
+    
+    if (inString) {
+      if (char === '\n') {
+        processed += '\\n';
+      } else if (char === '\r') {
+        processed += '\\r';
+      } else if (char === '\t') {
+        processed += '\\t';
+      } else {
+        processed += char;
+      }
+    } else {
+      processed += char;
+    }
+  }
+
+  // Remove trailing commas in objects and arrays
+  processed = processed.replace(/,\s*([\]}])/g, '$1');
+
+  return JSON.parse(processed);
 }
