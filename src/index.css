@@ -22,27 +22,27 @@
 }
 
 :root {
-  --navy-950: #FFFFFF;
-  --navy-900: #F9FAFB;
-  --navy-800: #F3F4F6;
-  --navy-700: #E5E7EB;
-  --navy-600: #D1D5DB;
+  --navy-950: #FFFFFF; /* GitHub light box/card background */
+  --navy-900: #F6F8FA; /* GitHub light canvas background */
+  --navy-800: #F6F8FA; /* GitHub light input background */
+  --navy-700: #D0D7DE; /* GitHub light border */
+  --navy-600: #57606A; /* GitHub light muted text/border */
   
-  --text-primary: #111827;
-  --text-secondary: #4B5563;
-  --text-muted: #9CA3AF;
+  --text-primary: #24292F; /* GitHub light primary text */
+  --text-secondary: #57606A; /* GitHub light secondary text */
+  --text-muted: #8C959F; /* GitHub light muted text */
 }
 
 :root.dark {
-  --navy-950: #0B0B0F; /* Premium pitch-black card background */
-  --navy-900: #000000; /* Pure black app background */
-  --navy-800: #16161D; /* Very dark grey input/nested background */
-  --navy-700: #22222E; /* Sleek dark border */
-  --navy-600: #333344; /* Muted border/icon */
+  --navy-950: #161B22; /* GitHub dark box background */
+  --navy-900: #0D1117; /* GitHub dark canvas background */
+  --navy-800: #21262D; /* GitHub dark input background */
+  --navy-700: #30363D; /* GitHub dark border */
+  --navy-600: #8B949E; /* GitHub dark muted border/text */
   
-  --text-primary: #FFFFFF; /* Pure white text */
-  --text-secondary: #E4E4E7; /* Zinc 200 text */
-  --text-muted: #71717A; /* Zinc 500 text */
+  --text-primary: #C9D1D9; /* GitHub dark primary text */
+  --text-secondary: #8B949E; /* GitHub dark secondary text */
+  --text-muted: #484F58; /* GitHub dark muted text */
 }
 
 /* Global Styles */
