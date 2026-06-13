@@ -14,7 +14,8 @@ import {
   FiAlertTriangle,
   FiGlobe,
   FiSun,
-  FiMoon
+  FiMoon,
+  FiMonitor
 } from "react-icons/fi";
 import SendPayment from "./components/SendPayment";
 import FraudScanner from "./components/FraudScanner";
@@ -92,10 +93,26 @@ function AppContent() {
       <button
         onClick={toggleTheme}
         className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-electric/30 text-electric hover:bg-electric/10 text-xs font-semibold cursor-pointer transition-all duration-200 active:scale-95 shrink-0"
-        title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
+        title={
+          theme === "system"
+            ? "Switch to Light Mode"
+            : theme === "light"
+            ? "Switch to Dark Mode"
+            : "Switch to System Theme"
+        }
       >
-        {theme === "light" ? <FiMoon className="w-3 h-3" /> : <FiSun className="w-3 h-3" />}
-        {!compact && <span>{theme === "light" ? "Dark" : "Light"}</span>}
+        {theme === "system" ? (
+          <FiMonitor className="w-3 h-3" />
+        ) : theme === "light" ? (
+          <FiMoon className="w-3 h-3" />
+        ) : (
+          <FiSun className="w-3 h-3" />
+        )}
+        {!compact && (
+          <span>
+            {theme === "system" ? "System" : theme === "light" ? "Dark" : "Light"}
+          </span>
+        )}
       </button>
     );
   };
