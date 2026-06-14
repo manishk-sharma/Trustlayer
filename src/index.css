@@ -184,3 +184,58 @@ input:focus, textarea:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
 }
+
+/* PIN shake animation for wrong PIN entry */
+@keyframes pin-shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.animate-pin-shake {
+  animation: pin-shake 0.5s ease-in-out;
+}
+
+/* Hide scrollbar for horizontal scroll containers */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* ═══ QR Scanner Styles ═══ */
+
+/* Scanning line animation */
+@keyframes qrScanLine {
+  0%   { top: 10%; }
+  50%  { top: 85%; }
+  100% { top: 10%; }
+}
+
+.animate-qr-scan-line {
+  animation: qrScanLine 2s ease-in-out infinite;
+  position: absolute;
+}
+
+/* Hide default html5-qrcode UI elements */
+#qr-reader__scan_region {
+  border: none !important;
+}
+#qr-reader__dashboard {
+  display: none !important;
+}
+#qr-reader video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 0 !important;
+}
+#qr-reader {
+  border: none !important;
+}
+.qr-reader-container img {
+  display: none !important;
+}
+

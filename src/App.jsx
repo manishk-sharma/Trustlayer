@@ -14,8 +14,7 @@ import {
   FiAlertTriangle,
   FiGlobe,
   FiSun,
-  FiMoon,
-  FiMonitor
+  FiMoon
 } from "react-icons/fi";
 import SendPayment from "./components/SendPayment";
 import FraudScanner from "./components/FraudScanner";
@@ -65,7 +64,6 @@ function AppContent() {
 
   const handleTransactionAdd = useCallback((txn) => {
     setTransactions((prev) => [txn, ...prev]);
-    setActiveTab("history");
   }, []);
 
   const handleTabChange = (tabId) => {
@@ -93,12 +91,10 @@ function AppContent() {
       <button
         onClick={toggleTheme}
         className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-electric/30 text-electric hover:bg-electric/10 text-xs font-semibold cursor-pointer transition-all duration-200 active:scale-95 shrink-0"
-        title={`Theme: ${theme}. Click to cycle.`}
+        title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
       >
-        {theme === "light" && <FiSun className="w-3 h-3" />}
-        {theme === "dark" && <FiMoon className="w-3 h-3" />}
-        {theme === "system" && <FiMonitor className="w-3 h-3" />}
-        {!compact && <span className="capitalize">{theme}</span>}
+        {theme === "light" ? <FiMoon className="w-3 h-3" /> : <FiSun className="w-3 h-3" />}
+        {!compact && <span>{theme === "light" ? "Dark" : "Light"}</span>}
       </button>
     );
   };
@@ -190,52 +186,7 @@ function AppContent() {
 
       {/* ========== Main Content Area ========== */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Bar */}
-        <header className="shrink-0 px-4 md:px-6 lg:px-8 pt-3 pb-2 flex items-center justify-between border-b border-navy-700 bg-navy-950">
-          {/* Mobile: show logo; Desktop: show page title */}
-          <div className="flex items-center gap-2 md:hidden">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-electric to-electric-dark flex items-center justify-center">
-              <FiShield className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-sm font-bold text-text-primary tracking-tight">
-              {t.appName}
-            </span>
-          </div>
-          <div className="hidden md:flex items-center gap-2">
-            <span className="text-text-secondary">{TABS.find(tab => tab.id === activeTab)?.icon}</span>
-            <h2 className="text-base font-bold text-text-primary">
-              {TABS.find(tab => tab.id === activeTab)?.label}
-            </h2>
-          </div>
-          <div className="flex items-center gap-2">
-            <LanguageToggle />
-            <ThemeToggle />
-            {apiKey ? (
-              <span className="text-[9px] md:text-[11px] font-medium text-risk-low bg-risk-low/10 px-2 py-0.5 rounded-full border border-risk-low/20 flex items-center gap-1">
-                <FiCpu className="w-2.5 h-2.5" />
-                {t.aiActive}
-              </span>
-            ) : demoMode ? (
-              <span className="text-[9px] md:text-[11px] font-medium text-electric bg-electric/10 px-2 py-0.5 rounded-full border border-electric/20 flex items-center gap-1">
-                <FiCpu className="w-2.5 h-2.5" />
-                {t.demoActive}
-              </span>
-            ) : (
-              <span className="text-[9px] md:text-[11px] font-medium text-text-muted bg-navy-800 px-2 py-0.5 rounded-full border border-navy-700 flex items-center gap-1">
-                <FiCpu className="w-2.5 h-2.5" />
-                {t.noKey}
-              </span>
-            )}
-            <button
-              onClick={() => setShowSettings(true)}
-              className="p-1.5 rounded-xl border border-navy-700 hover:bg-navy-800 text-text-secondary cursor-pointer transition-colors"
-              title="Settings"
-            >
-              <FiSettings className="w-4 h-4" />
-            </button>
-          </div>
-        </header>
-
+ 
         {/* Content Area */}
         <main className="flex-1 overflow-y-auto px-4 pt-4 md:px-6 lg:px-8 md:pt-6">
           <div className="max-w-3xl mx-auto">
